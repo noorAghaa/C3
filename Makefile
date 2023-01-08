@@ -1,18 +1,18 @@
-all: isort txtfind
-
-isort: isort.o
-	gcc -Wall -o isort isort.o
-
-txtfind: txtfind.o
-	gcc -Wall -o txtfind txtfind.o
-
-isort.o: isort.c isort.h
-	gcc -Wall -c isort.c
-
-txtfind.o: txtfind.c txtfind.h
-	gcc -Wall -c txtfind.c	
-
-
+all: txtfind isort
 
 clean:
 	rm -f *.o isort txtfind
+
+.PHONEY: all clean
+
+isort.o: isort.c isort.h
+	gcc -Wall -c isort.c -o isort.o
+
+isort: isort.o
+	gcc isort.o -o isort
+
+txtfind.o: txtfind.c txtfind.h
+	gcc -Wall -c txtfind.c -o txtfind.o
+
+txtfind: txtfind.o
+	gcc txtfind.o -o txtfind
