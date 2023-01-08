@@ -3,207 +3,143 @@
 #include <string.h>
 
 
-//params: s empty chars array to write the line into
-int getLine(char s[]){
-  int i = 0;
-    
-    while((*(s+i) != '\n') && (*(s+i) != '\0')  && (i< LINE)){
-       
-        i++;
-        
+#define MAIN
+#define GETLINE
+#define LINE 256
+#define WORD 30
+
+
+int main() {
+    char word[WORD];
+    char choose;
+    getword(word);
+    scanf(" %c\n", &choose);
+    if (choose == 'a'){
+        print_lines(word);
     }
-    
-    return i;
+    else if (choose == 'b'){
+        print_similar_words(word);
+    }
+    return 0;
 }
+//I do
+int ggetline(char str[]){
+    int index = 0 ;
+    char character = '0';
 
-int getWord(char w[]){
-
-
-    int counter = 0;
-    while (*w != '\n' && *w != '\t' && *w != ' '&&counter<WORD){
-        counter++;
-        w++;
-    }
-    return counter;
-    
-   
-}
-
-
-int substring(char * str1, char * str2){
-     int str1Length = getWord(str1);
-    int str2Length = getWord(str2);
-    if(str1Length < str2Length){
-        return 0;
-    }
-    int difference = str1Length - str2Length;
-    int boolean = 0;
-    for (size_t i = 0; i <= difference ; i++){
-        if (*str1 == *str2){
-            char * p1 = str1 + 1;
-            char * p2 = str2 + 1;
-            for (size_t j = 1; j < str2Length; j++){
-                if (*p1 == *p2){
-                    boolean = 1;
-                    p1++;
-                    p2++;
-                }
-                else{
-                    boolean = 0;
-                    break;
-                }
-            }
-        }
-        if (boolean==1){
-            return boolean;
-        }
-        str1++;
-    }
-    return boolean;
-}
-
-int similar (char *s, char *t, int n){
-    int sLength = getWord(s);
-    int tLength = getWord(t);
-    if (sLength < tLength){
-        return 0;
-    }
-    int counter = 0;
-    int i = 1;
-    for (; i <= sLength; i++) {
-        if(*t == ' ' || *t == '\n' || *t == '\t'){
+    while(index < LINE){
+        int s=scanf("%c", &character);
+        if (character == '\n')
+        {
+            str[index] = '\0';
             break;
         }
-        if(*s == *t){
-            s++;
-            t++;
+        if ( s== EOF)
+        {
+            str[index] = '\0';
+            break;
         }
-        else{
-            s++;
-            counter++;
+        str[index]=character;
+        index++;
+    }
+    if(index==LINE){
+        index--;
+        str[index] = '\0';
+    }
+
+    int length_line=strlen(str);
+    return length_line;
+}
+
+ //I do   
+    int getword(char str[]){
+
+    int index = 0 ;
+    char character = '0';
+
+    while(index < WORD){
+        int s=scanf("%c", &character);
+        if (character == '\n' || character == '\t' || character == ' ' )
+        {
+            str[index]='\0';
+            break;
         }
+        if(s==EOF){
+            str[index]='\0';
+            break;
+        }
+        str[index]=character;
+        index++;
     }
-   if (i <= sLength){
-        counter = counter + sLength - i + 1;
+    if(index==WORD){
+        index--;
+        str[index] = '\0';
     }
-    if (counter > n){
+    int length_word=strlen(str);
+    return length_word;
+    }
+//I do
+
+int help_substring(char *str1, char *str2)
+{
+    while (*str1 && *str2 && *str1 == *str2) {
+        str1++;
+        str2++;
+    }
+    if(*str2==0){
+        return 1;
+    }
+    return 0;
+}
+int substring( char * str1, char * str2){
+
+    while(*str1){
+        while(*str1&& *str1!=*str2){
+            str1++;
+        }
+
+        if(*str1==0){
         return 0;
+        }
+        if(help_substring( str1, str2)){
+            return 1;
+        }
+        str1++;
+        
     }
-    return 1;
+    return 0;
 }
-
-void print_lines(char * str) {
-char line[LINE] = {0};
-    char *P =line;
-    int boolean = 1;
-    int flag;
-    while(boolean){
-        while(1){
-            flag = scanf("%c",P);
-           
-            if (*P == '\n') {
-                P = line;
-                break;
-            }
-             if(flag == EOF) {
-                boolean = 0;
-                break;
-            }
-            P++;
+//i do
+int similar (char *s, char *t, int n){
+    for(int i=0;i<=n;i++){
+        while (*s && *t && *s == *t) {
+        s++;
+        t++;
         }
-        while (*P!= '\n'){
-            int wordLength = getWord(P);
-            char word [WORD] = {0};
-            char *Pword = word;
-            for (size_t i = 0; i < wordLength; i++) {
-                *Pword= *P;
-                Pword++;
-                P++;
-            }
-           
-          
-            if (*P == ' ' || *P == '\t')
-                P++;
-            if (substring(word,str)){
-                printf("%s", line);
-                P = line;
-                break;
-            }
-             Pword = word;
+        if(*t==0 &&*s==0){
+            return 1;
         }
-        P = line;
-       
+        s++;
     }
- 
-    }
+    return 0;
+}
+//I do 
+void print_lines(char * str){
+    char line[LINE]={0};
 
+    while(ggetline(line)!=0){
+        if(substring(line,str)){
+            printf("%s\n",line);
+        }
+    }
+}
+//i do
 void print_similar_words(char * str){
-   char line[LINE] = {0};
-    char *P =line;
-    int boolean = 1;
-    int flag;
-    while(boolean){
-        while(1){
-            flag = scanf("%c",P);
-           
-            if (*P == '\n') {
-                P = line;
-                break;
-            }
-             if(flag == EOF) {
-                boolean = 0;
-                break;
-            }
-            P++;
+    char word[WORD]={0};
+
+    while(getword(word)!=0){
+        if(similar(word,str,1)){
+            printf("%s\n",word);
         }
-        while (*P!= '\n'){
-            int wordLength = getWord(P);
-            char word [WORD] = {0};
-            char *Pword = word;
-            for (size_t i = 0; i < wordLength; i++) {
-                *Pword= *P;
-                Pword++;
-                P++;
-            }
-           
-           *Pword = ' ';
-            
-           Pword = word;
-            if (*P == ' ' || *P == '\t')
-                P++;
-             if (similar(word,str,1)){
-                while(*Pword != '\t' && *Pword != '\n' && *Pword != ' '){
-                   printf("%c", *Pword);
-                    Pword++;
-                }
-                printf("\n");
-            }
-            
-        }
-        P = line;
-      
     }
- 
-}
-
-int main(){
-
-
-     char word[WORD] = {0};
-   char c='\0';
-   int i=0;
- while(1){
-     scanf("%c",&word[i]);
-    if(word[i]==' '){
-      scanf("%c",&c);
-        break;}
-    i++;
- }
-
- 
- if(c=='a')
- print_lines(word);
-if(c=='b')
- print_similar_words(word);
-return 0;
 }
